@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <title>IoT-e Documenation</title>
+    
+    <meta name="author" content="David Woodard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+	<link href="assets/css/github.css" rel="stylesheet">
+	
+		<link rel="icon" href="images/favicon.png" type="image/x-icon"/>
+		<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon"/>
+
+    <!--[if lt IE 9]>
+      <script src="/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <!--Google Analytics-->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56028459-3', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #6cc091" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">IoT-e</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container main-container">
+      <div class="row main-container">
+        <div id="navigation" class="col-md-3 collapse navbar-collapse navbar-ex1-collapse" style="font-size: 1em; font-weight: bold;">
+          <ul class="list-unstyled"  >
+            
+                
+                 <li class="nav-header">Documentation</li>
+                
+                <li><a style="color: #6cc091" href="intro.html">Introduction</a></li>
+              
+                
+                <li><a style="color: #6cc091" href="raspberry.html">Raspberry Pi Quick Start</a></li>
+				
+                
+                <li><a style="color: #6cc091" href="setup.html">Getting Started</a></li>
+              
+                
+              
+                
+                <li><a style="color: #6cc091" href="cloud.html">Cloud Configuration</a></li>
+				
+              
+                
+                <li><a style="color: #6cc091" href="publish.html">Publishing Application</a></li>
+                    
+          </ul>
+        </div>
+        <div class="col-md-9 main-content">
+          <div class="page-header">
+  <h1>Raspberry Pi Quick Start </h1>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+ 
+<h2 >Overview</h2>
+
+<p>This section provides IoT-e quick installation procedures for the
+Raspberry Pi.</p>
+
+
+<p>This quickstart has been tested using the following image:</p>
+
+<pre>2016-11-25-raspbian-jessie-lite.img</pre>
+
+<p>downloaded from</p>
+
+<pre>https://www.raspberrypi.org/downloads/raspbian/</pre>
+
+<p>and with the NOOBS image installed on the sdcard bundled with the Raspberry Pi 3.</p>
+
+<h2 >Enable SSH Access</h2>
+
+<p>The ssh server is disabled by default on Raspbian images released after November 2016,
+in order to enable it follow the instructions available at the following URL:</p>
+
+<pre>https://www.raspberrypi.org/documentation/remote-access/ssh/</pre>
+
+<h2 >IoT-e Installation</h2>
+
+<p>To install IoT-e with its dependencies on the Raspberry Pi, perform the
+following steps:</p>
+
+<ol>
+  <li>
+    <p>Boot the Raspberry Pi with the latest Raspbian image.</p>
+  </li>
+  <li>
+    <p>The dhcpcd5 package is not compatible with IoT-e and needs to be removed
+performing the following command:</p>
+
+    <pre>sudo apt-get purge dhcpcd5</pre>
+  </li>
+  <li>
+    <p>NetworkManager conflicts with IoT-e network management, make sure that it is
+not installed performing the following command:</p>
+
+    <pre>sudo apt-get remove network-manager</pre>
+  </li>
+  <li>
+    <p>Install the gdebi command line tool:</p>
+
+    <pre>sudo apt-get update
+sudo apt-get install gdebi-core</pre>
+  </li>
+  <li>
+    <p>Make sure that Java 8 is installed with</p>
+
+    <pre>java -version</pre>
+
+    <p>if not install OpenJDK 8 performing the following command:</p>
+
+    <pre>sudo apt-get install openjdk-8-jre-headless</pre>
+  </li>
+  
+  <li>
+    <p>Install IoT-e with: </p>
+
+    <pre>sudo gdebi IoT-e_installer.deb</pre>
+  </li>
+  <li>
+    <p>Reboot the Raspberry Pi with:</p>
+
+    <pre>sudo reboot</pre>
+
+    <p>IoT-e starts on the target platform after reboot.</p>
+  </li>
+  <li>
+    <p>IoT-e setups a local web ui that is available using a browser via:</p>
+
+    <pre>http://&lt;device-ip&gt;</pre>
+
+    <p>Default <strong>username</strong> is:</p>
+
+    <pre>admin</pre>
+
+    <p>Default <strong>password</strong> is:</p>
+
+    <pre>admin</pre>
+  </li>
+</ol>
+
+
+          <hr>
+          <footer>
+            <p>
+              <span class="pull-right text-muted">
+                Documentation for IoT-e
+              </span>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

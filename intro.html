@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <title>IoT-e Documenation</title>
+    
+    <meta name="author" content="David Woodard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+	<link href="assets/css/github.css" rel="stylesheet">
+
+		<link rel="icon" href="images/favicon.png" type="image/x-icon"/>
+		<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon"/>
+
+    <!--[if lt IE 9]>
+      <script src="/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <!--Google Analytics-->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56028459-3', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #6cc091" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">IoT-e</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container main-container">
+      <div class="row main-container">
+        <div id="navigation" class="col-md-3 collapse navbar-collapse navbar-ex1-collapse" style="font-size: 1em; font-weight: bold;">
+          <ul class="list-unstyled"  >
+            
+                
+                  <li class="nav-header">Documentation</li>
+                
+                <li><a style="color: #6cc091" href="intro.html">Introduction</a></li>
+              
+                
+                <li><a style="color: #6cc091" href="raspberry.html">Raspberry Pi Quick Start</a></li>
+				
+                
+                <li><a style="color: #6cc091" href="setup.html">Getting Started</a></li>
+              
+                
+              
+                
+                <li><a style="color: #6cc091" href="cloud.html">Cloud Configuration</a></li>
+				
+              
+                
+                <li><a style="color: #6cc091" href="publish.html">Publishing Application</a></li>
+                    
+          </ul>
+        </div>
+        <div class="col-md-9 main-content">
+          <div class="page-header">
+  <h1>Introduction </h1>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+      <p>The emergence of an Internet of Thing (IoT) service model running modern software stacks, operating on the edge of an IoT deployment as an aggregator and controller, has opened up the possibility of enabling enterprise level technologies to IoT.</p>
+
+<p>Advanced software frameworks, which abstract and isolate the developer from the complexity of the hardware and the networking sub-systems, re-define the development and re-usability of integrated hardware and software solutions.</p>
+
+<p>IoT-e is a project that provides a platform for building IoT applications. It is a smart application container that enables remote management of such applications and provides a wide range of APIs for allowing you to write and deploy your own IoT application.</p>
+
+<p>IoT-e runs on top of the Java Virtual Machine (JVM) and leverages OSGi, a dynamic component system for Java, to simplify the process of writing reusable software building blocks. IoT-e APIs offer  easy access to the underlying hardware including serial ports, GPS, USB, GPIOs, I2C, etc. It also offer OSGI bundle to simplify the management of network configurations, the communication with IoT servers, and the remote management of the gateway.</p>
+
+<p>IoT-e components are designed as configurable OSGi Declarative Service exposing service API and raising events. While several IoT-e components are in pure Java, others are invoked through JNI and have a dependency on the Linux operating system.</p>
+
+<p>IoT-e comes with the following services:</p>
+
+<ul>
+  <li>I/O Services
+    <ul>
+      <li>Serial port access through javax.comm 2.0 API or OSGi I/O connection</li>
+      <li>USB access and events through javax.usb, HID API, custom extensions</li>
+      <li>Bluetooth access through javax.bluetooth or OSGi I/O connection</li>
+      <li>Position Service for GPS information from a NMEA stream</li>
+      <li>Clock Service for the synchronization of the system clock</li>
+      <li>IoT-e API for GPIO/PWM/I2C/SPI access</li>
+    </ul>
+  </li>
+  <li>Data Services
+    <ul>
+      <li>Store and forward functionality for the telemetry data collected by the gateway and published to remote servers.</li>
+      <li>Policy-driven publishing system, which abstracts the application developer from the complexity of the network layer and the 
+  publishing protocol used. Eclipse Paho and its MQTT client provides the default messaging library used.</li>
+    </ul>
+  </li>
+  <li>Cloud Services
+    <ul>
+      <li>Easy to use API layer for IoT application to communicate with a remote server. In addition to simple publish/subscribe,
+the Cloud Service API simplifies the implementation of more complex interaction flows like request/response or remote resource management.
+Allow for a single connection to a remote server to be shared across more than one application in the gateway providing the necessary topic partitioning.</li>
+    </ul>
+  </li>
+  <li>Configuration Service
+    <ul>
+      <li>Leverage the OSGi specifications ConfigurationAdmin and MetaType to provide a snapshot service to import/export the configuration of all registered services in the container.</li>
+    </ul>
+  </li>
+  <li>Remote Management
+    <ul>
+      <li>Allow for remote management of the IoT applications installed in IoT-e including their deployment, upgrade and configuration management. The Remote Management
+service relies on the Configuration Service and the Cloud Service.</li>
+    </ul>
+  </li>
+  <li>Networking
+    <ul>
+      <li>Provide API for introspects and configure the network interfaces available in the gateway like Ethernet, Wifi, and Cellular modems.</li>
+    </ul>
+  </li>
+  <li>Watchdog Service
+    <ul>
+      <li>Register critical components to the Watchdog Service, which will force a system reset through the hardware watchdog when a problem is detected.</li>
+    </ul>
+  </li>
+  <li>Web administration interface
+  *Offer a web-based management console running within the IoT-e container to manage the platform.</li>
+</ul>
+
+          <hr>
+          <footer>
+            <p>
+              <span class="pull-right text-muted">
+                Documentation for IoT-e
+              </span>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

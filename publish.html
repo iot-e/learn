@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <title>IoT-e Documenation</title>
+    
+    <meta name="author" content="David Woodard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+	<link href="assets/css/github.css" rel="stylesheet">
+	
+		<link rel="icon" href="images/favicon.png" type="image/x-icon"/>
+		<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon"/>
+
+    <!--[if lt IE 9]>
+      <script src="/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <!--Google Analytics-->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56028459-3', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #6cc091" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">IoT-e</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container main-container">
+      <div class="row main-container">
+        <div id="navigation" class="col-md-3 collapse navbar-collapse navbar-ex1-collapse" style="font-size: 1em; font-weight: bold;">
+          <ul class="list-unstyled"  >
+            
+                
+                  <li class="nav-header">Documentation</li>
+                
+                <li><a style="color: #6cc091" href="intro.html">Introduction</a></li>
+              
+                
+                <li><a style="color: #6cc091" href="raspberry.html">Raspberry Pi Quick Start</a></li>
+				
+                
+                <li><a style="color: #6cc091" href="setup.html">Getting Started</a></li>
+              
+                
+              
+                
+                <li><a style="color: #6cc091" href="cloud.html">Cloud Configuration</a></li>
+				
+              
+                
+                <li><a style="color: #6cc091" href="publish.html">Publishing Application</a></li>
+              
+                
+                    
+          </ul>
+        </div>
+        <div class="col-md-9 main-content">
+		<div class="page-header">
+  <h1>Publishing Application </h1>
+</div>
+
+
+<h2 >Heater Demo Introduction</h2>
+
+<p>The org.eclipse.iote.demo.heater bundle is a simple OSGi bundle that
+represents a thermostat and heater combination. The application utilizes
+the IoT-e ConfigurableComponent interface to be able to receive
+configuration updates through the local IoT-e web UI. In addition, this
+bundle utilizes OSGi declarative services and the IoT-e
+CloudClientListener. This tutorial demonstrates how to modify
+configurations of custom bundles and shows how those configuration
+changes can dynamically impact the behavior of the bundle through the
+IoT-e web UI.</p>
+
+<h2 >Code Walkthrough</h2>
+
+<p>The following sections will highlight three important API layers when creating an application that will publish to the cloud. These layers are:</p>
+
+<ul>
+  <li>DataTransportService
+    <ul>
+      <li>Available for standard MQTT messaging. Allows consumers of the service to connect to brokers, publish messages, and receive messages on subscribed topics</li>
+    </ul>
+  </li>
+  <li>DataService
+    <ul>
+      <li>Delegates data transport to the DataTransportService</li>
+      <li>Provides extended features for managing broker connections, buffering of published messages, and priority based delivery of messages</li>
+    </ul>
+  </li>
+  <li>CloudService
+    <ul>
+      <li>Further extends the functionality of DataService</li>
+      <li>Provides means for more complex flows (i.e. request/response)</li>
+      <li>Manages single broker connection across multiple applications</li>
+      <li>Provides payload data model with encoding/decoding serializers</li>
+      <li>Publishes life cycle manages for devices and applications</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 >Acquiring CloudClient</h2>
+
+<p>The CloudService can manage multiple applications over a shared MQTT connection by treating each application as a client. The example code uses the “setCloudService” and “unsetCloudService” methods for referencing and releasing the CloudService. In the bundles activate method, the service reference in conjunction with a unique application ID can then be used to obtain a CloudClient. The relevant code is shown below (ommitted sections are denoted by ==OMMITTED==):</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+<span class="c1">// Cloud Application identifier</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">APP_ID</span> <span class="o">=</span> <span class="s">"heater"</span><span class="o">;</span>
+
+<span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCloudService</span><span class="o">(</span><span class="n">CloudService</span> <span class="n">cloudService</span><span class="o">)</span> <span class="o">{</span>
+	<span class="n">m_cloudService</span> <span class="o">=</span> <span class="n">cloudService</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">unsetCloudService</span><span class="o">(</span><span class="n">CloudService</span> <span class="n">cloudService</span><span class="o">)</span> <span class="o">{</span>
+	<span class="n">m_cloudService</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+
+<span class="c1">// Acquire a Cloud Application Client for this Application</span>
+<span class="n">s_logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Getting CloudClient for {}..."</span><span class="o">,</span> <span class="n">APP_ID</span><span class="o">);</span>
+<span class="n">m_cloudClient</span> <span class="o">=</span> <span class="n">m_cloudService</span><span class="o">.</span><span class="na">newCloudClient</span><span class="o">(</span><span class="n">APP_ID</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<h2 id="publishingsubscribing">Publishing/Subscribing</h2>
+
+<p>The private “doPublish” method is used to publish messages at a fixed rate. The method demonstrates how to use the CloudClient and iotePayload to publish MQTT messages.</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+
+<span class="c1">// Allocate a new payload</span>
+<span class="n">iotePayload</span> <span class="n">payload</span> <span class="o">=</span> <span class="k">new</span> <span class="n">iotePayload</span><span class="o">();</span>
+
+<span class="c1">// Timestamp the message</span>
+<span class="n">payload</span><span class="o">.</span><span class="na">setTimestamp</span><span class="o">(</span><span class="k">new</span> <span class="n">Date</span><span class="o">());</span>
+
+<span class="c1">// Add the temperature as a metric to the payload</span>
+<span class="n">payload</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="s">"temperatureInternal"</span><span class="o">,</span> <span class="n">m_temperature</span><span class="o">);</span>
+<span class="n">payload</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="s">"temperatureExternal"</span><span class="o">,</span> <span class="mf">5.0</span><span class="n">F</span><span class="o">);</span>
+<span class="n">payload</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="s">"temperatureExhaust"</span><span class="o">,</span>  <span class="mf">30.0</span><span class="n">F</span><span class="o">);</span>
+
+<span class="kt">int</span> <span class="n">code</span> <span class="o">=</span> <span class="n">m_random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">((</span><span class="n">m_random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">()</span> <span class="o">%</span> <span class="mi">5</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+	<span class="n">payload</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="s">"errorCode"</span><span class="o">,</span> <span class="n">code</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="k">else</span> <span class="o">{</span>
+	<span class="n">payload</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="s">"errorCode"</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// Publish the message</span>
+<span class="k">try</span> <span class="o">{</span>
+	<span class="n">m_cloudClient</span><span class="o">.</span><span class="na">publish</span><span class="o">(</span><span class="n">topic</span><span class="o">,</span> <span class="n">payload</span><span class="o">,</span> <span class="n">qos</span><span class="o">,</span> <span class="n">retain</span><span class="o">);</span>
+	<span class="n">s_logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Published to {} message: {}"</span><span class="o">,</span> <span class="n">topic</span><span class="o">,</span> <span class="n">payload</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+	<span class="n">s_logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"Cannot publish topic: "</span><span class="o">+</span><span class="n">topic</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Similarly, the CloudClient can be used to subscribe to MQTT topics. Although not shown in the example code, the following snippet could be added to subscribe to all published messages:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">m_cloudClient</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">topic</span><span class="o">,</span> <span class="n">qos</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<h3 id="callback-methods">Callback Methods</h3>
+
+<p>The example class implements CloudClientListener, which provides methods for several common callback methods. The below snippet shows the relevant code for creating the listeners for the demo application.</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Heater</span> <span class="kd">implements</span> <span class="n">ConfigurableComponent</span><span class="o">,</span> <span class="n">CloudClientListener</span>
+
+<span class="o">==</span><span class="n">OMMITTED</span><span class="o">==</span>
+
+<span class="n">m_cloudClient</span><span class="o">.</span><span class="na">addCloudClientListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+
+</code></pre>
+</div>
+
+<p>The available methods for implementation are:</p>
+
+<ul>
+  <li>onControlMessageArrived: Method called when a control message is received from the broker.</li>
+  <li>onMessageArrived: Method called when a data message is received from the broker.</li>
+  <li>onConnectionLost: Method called when the client has lost connection with the broker.</li>
+  <li>onConnectionEstablished: Method called when the client establishes a connection with the broker.</li>
+  <li>onMessageConfirmed: Method called when a published message has been fully acknowledged by the broker (not applicable for qos 0 messages).</li>
+  <li>onMessagePublished: Method called when a message has been transfered from the publishing queue to the DataTransportService.</li>
+</ul>
+
+
+<h2 >Configure the MQTT Client</h2>
+
+<p>With the heater demo bundle running, open a browser window on the same
+computer as the Eclipse development environment and browse to the IoT-e
+web UI at <a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a>. Once connected to the IoT-e web UI, a
+log in window appears prompting you to enter the Name and Password as
+shown below:</p>
+
+<p><img src="images/image2.png" alt="" /></p>
+
+<p>Enter the appropriate name and password (default is admin/admin) and
+click <strong>Log in</strong>. The IoT-e Admin web UI appears as shown below:</p>
+
+<p><img src="/images/image3.png" alt="" /></p>
+<p>From the IoT-e web UI, click on <strong>MqttDataTransport</strong> in the Services
+pane on the lower left of the browser window. You will see a menu
+similar to the one shown in the following screen capture:</p>
+
+<p><img src="images/image4.png" alt="" /></p>
+
+<p>Fill in the following fields then click the <strong>Apply</strong> button:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>broker-url:</td>
+      <td>The url for the MQTT broker (this example shows the MQTT broker-url <strong>mqtt://iot.eclipse.org:1883/</strong> hosted by the Eclipse Foundation)</td>
+    </tr>
+    <tr>
+      <td>topic.context.account-name:</td>
+      <td>Your [account_name]</td>
+    </tr>
+    <tr>
+      <td>username:</td>
+      <td>Typically [account_name]_broker</td>
+    </tr>
+    <tr>
+      <td>password:</td>
+      <td>The password for your user</td>
+    </tr>
+    <tr>
+      <td>client-id</td>
+      <td>The client identifier to be used when connecting to the MQTT broker (optional)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+Now that the account credentials are set in the MqttDataTransport
+service, the DataService needs to be configured to connect by default.
+To do so, click <strong>DataService</strong> in the Services area on the left of the
+browser window. For the ‘connect.auto-on-startup’ parameter, select
+<strong>true</strong> as shown below:</p>
+
+<p><img src="images/image5.png" alt="" /></p>
+
+<p><span id="_View_and_Modify" class="anchor"><span id="_Modify_Configuration_and" class="anchor"></span></span></p>
+
+<h2 id="modify-bundle-configuration-in-local-web-ui">Modify Bundle Configuration in Local Web UI</h2>
+
+<p>Bundles changes may be made directly in the emulator web UI. Since you
+are running an emulated device in Eclipse, you can do this by browsing
+to <a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> (same URL where the MQTT client was
+configured in the previous section of this tutorial). If the bundle was
+running on a real device and you had network access to it, you would
+browse to
+<a href="http://ip_address_of_device/">http://[ip_address_of_device]</a>.</p>
+
+<p>From the IoT-e web UI, select the Heater bundle from the configurable
+services on the left and modify the parameters as needed (shown in the
+screen capture below). By default, the heater demo is configured
+according to the following characteristics and assumptions about its
+operational environment:</p>
+
+<ul>
+  <li>
+    <p>Start operation is at 6:00am (06:00).</p>
+  </li>
+  <li>
+    <p>End operation is at 10:00pm (22:00).</p>
+  </li>
+  <li>
+    <p>It is colder outside than inside the heated chamber (hard-coded to 5
+ degrees in the application).</p>
+  </li>
+  <li>
+    <p>Output of the heater is constant at 30 degrees (hard-coded).</p>
+  </li>
+  <li>
+    <p>When in operational mode, the temperature will drop inside if the
+ heater is off.</p>
+  </li>
+  <li>
+    <p>The heater turns off when it is about to exceed the setPoint defined
+ in the configuration.</p>
+  </li>
+  <li>
+    <p>After the temperature drops to four times the increment point (a
+ made-up value to show dropping temperature, hard-coded in the
+ application), the heater turns back on, and the temperature starts
+ increment at the rate of the ‘temperature.increment’ rate.</p>
+  </li>
+</ul>
+
+<p><img src="images/image6.png" alt="" /></p>
+
+<p>Click <strong>Apply</strong> for changes to take affect. The updated() method is
+called after settings are applied for the new configuration.</p>
+
+<p>After completing this tutorial, it is highly recommended that you review
+the heater demo source code in Eclipse to see how it is put together.
+IoT-e automatically generates the user configuration interface through
+implementation of the ConfigurableComponent interface and some small
+additions to the component.xml file (called heater.xml). This powerful
+feature provides both a local and remote configuration user interface
+with no additional development requirements.</p>
+
+
+          <hr>
+          <footer>
+            <p>
+              <span class="pull-right text-muted">
+                Documentation for IoT-e
+              </span>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
